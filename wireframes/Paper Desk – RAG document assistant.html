@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paper Desk – RAG document assistant</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@500;600&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f3f5f7;--panel:#fff;--side:#e8ecf0;--ink:#16202a;--mute:#66727e;--line:#d8dee4;--acc:#0f766e;--accfg:#fff;--hover:#d5dbe1;--del:#c62828;--user:#e1efed;color-scheme:light;box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1419;--panel:#161d25;--side:#12181e;--ink:#e6ebf0;--mute:#8b97a3;--line:#27313b;--acc:#4fd1c0;--accfg:#05201c;--hover:#232d38;--del:#ef5350;--user:#18312f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1419;--panel:#161d25;--side:#12181e;--ink:#e6ebf0;--mute:#8b97a3;--line:#27313b;--acc:#4fd1c0;--accfg:#05201c;--hover:#232d38;--del:#ef5350;--user:#18312f;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "Instrument Sans",system-ui,sans-serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+#app{display:flex;height:100%}
+aside{width:260px;background:var(--side);display:flex;flex-direction:column;padding:12px;gap:4px;transition:margin .2s;flex:none}
+aside.closed{margin-left:-260px}
+.row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;width:100%;text-align:left}
+.row:hover,.row.sel{background:var(--hover)}
+.row.new{font-weight:600}
+.hist{flex:1;overflow:auto;display:flex;flex-direction:column;gap:2px;margin-top:6px;border-top:1px solid var(--line);padding-top:8px}
+.hist .row{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.icon{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:var(--mute)}
+.icon:hover{background:var(--hover);color:var(--ink)}
+.side-top{display:flex;justify-content:flex-end}
+.side-bot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px}
+.seg{display:flex;background:var(--bg);border-radius:999px;padding:3px}
+.seg button{padding:3px 12px;border-radius:999px;font-size:13px;color:var(--mute)}
+.seg button.on{background:var(--acc);color:var(--accfg)}
+main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+header{height:56px;display:flex;align-items:center;gap:8px;padding:0 16px;border-bottom:1px solid var(--line)}
+header h1{font:600 20px "Newsreader",Georgia,serif;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#open{display:none}#open.show{display:grid}
+.body{flex:1;overflow:auto;padding:24px}
+.wrap{max-width:760px;margin:0 auto}
+.empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--mute)}
+.empty h2{font:600 28px "Newsreader",Georgia,serif;color:var(--ink);margin:0 0 6px}
+.msg{margin-bottom:20px;display:flex;flex-direction:column}
+.msg.u{align-items:flex-end}
+.bub{max-width:88%;padding:10px 14px;border-radius:14px;white-space:pre-wrap}
+.u .bub{background:var(--user)}
+.a .bub{background:var(--panel);border:1px solid var(--line)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:3px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--line);margin:0 6px 6px 0}
+.src{margin-top:8px;font-size:13px;color:var(--mute);max-width:88%}
+.src details{border-left:2px solid var(--acc);padding-left:10px;margin-top:6px}
+.src summary{cursor:pointer}
+.tag{font-size:12px;padding:1px 8px;border-radius:999px;background:var(--hover);color:var(--mute)}
+.bar{height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:40%;background:var(--acc);border-radius:4px;animation:slide 1s ease-in-out infinite}
+.bar.det i{animation:none;transition:width .25s}
+@keyframes slide{0%{margin-left:-40%}100%{margin-left:100%}}
+@media (prefers-reduced-motion:reduce){.bar i{animation:none;width:100%}}
+.composer{padding:12px 24px calc(16px + env(safe-area-inset-bottom,0px))}
+.box{max-width:760px;margin:0 auto;display:flex;align-items:flex-end;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:8px;position:relative}
+.box textarea{flex:1;border:0;background:none;resize:none;outline:0;max-height:140px;padding:7px 4px;font:inherit;color:inherit}
+.btn{background:var(--acc);color:var(--accfg);padding:7px 16px;border-radius:10px;font-weight:600}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.btn.del{background:var(--del);color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.menu{position:absolute;bottom:56px;left:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,.16);z-index:5}
+.pend{max-width:760px;margin:0 auto 8px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;z-index:10;padding:16px}
+.card{background:var(--panel);border-radius:14px;width:min(460px,100%);padding:18px;display:flex;flex-direction:column;gap:12px;max-height:80vh}
+.card h3{margin:0;font:600 18px "Newsreader",Georgia,serif}
+.card .list{overflow:auto;flex:1;min-height:120px}
+.card .acts{display:flex;justify-content:flex-end;gap:8px}
+input[type=text],input[type=password],select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg)}
+label.item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px}
+label.item:hover{background:var(--hover)}
+input[type=checkbox]{accent-color:var(--acc);width:16px;height:16px}
+.tools{display:flex;gap:8px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.tools input{max-width:240px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px}
+.file{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center;font-size:13px;word-break:break-word}
+.file.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.file svg{color:var(--acc)}
+.file input{position:absolute;top:10px;right:10px}
+.file small{display:block;color:var(--mute)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.cols section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.cols h2{font:600 18px "Newsreader",Georgia,serif;margin:0 0 4px}
+.cols span{font-size:13px;color:var(--mute)}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:14px;z-index:20}
+@media (max-width:760px){aside{position:fixed;inset:0 auto 0 0;z-index:8;padding-top:calc(12px + env(safe-area-inset-top,0px))}#open.show{display:grid}.cols{grid-template-columns:1fr}.body{padding:16px}}
+</style>
+</head>
+<body>
+<div id="app">
+<aside id="side"></aside>
+<main>
+<header><button class="icon" id="open" data-a="toggle" aria-label="Open sidebar">☰</button><h1 id="title"></h1></header>
+<div class="body" id="body"></div>
+<div id="foot"></div>
+</main>
+</div>
+<input type="file" id="pick" multiple accept=".txt,.md,.csv,.pdf,.docx" hidden>
+<div id="layer"></div>
+<script>
+var $=function(s){return document.querySelector(s)};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+var uid=function(){return Math.random().toString(36).slice(2,9)};
+var PROV={"OpenAI":["gpt-4o","gpt-4o-mini","text-embedding-3-small","text-embedding-3-large"],"Anthropic":["claude-sonnet-4-6","claude-haiku-4-5"],"Google":["gemini-2.5-pro","gemini-2.5-flash","text-embedding-004"],"Ollama (local)":["llama3.1","nomic-embed-text"]};
+var S={docs:[],chats:[],theme:"auto",side:true,set:{e:{p:"OpenAI",m:"text-embedding-3-small",k:""},r:{p:"Anthropic",m:"claude-sonnet-4-6",k:""}}};
+try{var raw=localStorage.getItem("paperdesk");if(raw)Object.assign(S,JSON.parse(raw))}catch(e){}
+var V={n:"default",id:null},pend=[],busy=null,menu=false,sel=[],toast="";
+function save(){try{localStorage.setItem("paperdesk",JSON.stringify(S))}catch(e){}}
+var I={doc:'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>',
+ gear:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+ left:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M16 10l-3 2 3 2"/></svg>'};
+/* ---------- RAG pipeline (client-side stand-in) ---------- */
+var STOP="the a an and or of to in is are for on with that this it as by be from at was were which has have not can will".split(" ");
+function words(t){return(t.toLowerCase().match(/[a-z0-9]{3,}/g)||[]).filter(function(w){return STOP.indexOf(w)<0})}
+function split(text){var out=[],cur="";text.split(/\n\s*\n|(?<=[.!?])\s+/).forEach(function(p){if((cur+p).length>420&&cur){out.push(cur.trim());cur=""}cur+=p+" "});if(cur.trim())out.push(cur.trim());return out}
+function autoTag(c){var f={};words(c).forEach(function(w){f[w]=(f[w]||0)+1});return Object.keys(f).sort(function(a,b){return f[b]-f[a]}).slice(0,2)}
+function retrieve(q,ids){var qw=words(q);var pool=[];S.docs.filter(function(d){return ids.indexOf(d.id)>-1}).forEach(function(d){d.chunks.forEach(function(c){pool.push({d:d,c:c})})});
+ var hit=pool.filter(function(x){return x.c.tags.some(function(t){return qw.indexOf(t)>-1})||x.d.tags.some(function(t){return qw.indexOf(t.toLowerCase())>-1})});
+ var cand=hit.length?hit:pool;
+ return cand.map(function(x){var cw=words(x.c.text);var s=qw.filter(function(w){return cw.indexOf(w)>-1}).length/Math.sqrt(qw.length*cw.length||1);x.s=s;return x}).sort(function(a,b){return b.s-a.s}).slice(0,3)}
+/* Replace this with a real call to S.set.r (provider, model, API key) */
+function answer(q,hits){if(!hits.length||hits[0].s===0&&!/summar|key point|overview/i.test(q))return"I could not find a passage that matches this question in the selected documents. Try rephrasing, or add more documents.";
+ var list=/summar|key point|list|overview/i.test(q);var s=hits.map(function(h,i){var first=h.c.text.split(/(?<=[.!?])\s/)[0];return(list?"• ":"")+first}).join(list?"\n":" ");
+ return(list?"Key points from the selected documents:\n":"Based on the retrieved passages: ")+s}
+/* ---------- file handling ---------- */
+function readText(f){return new Promise(function(res){if(/\.(txt|md|csv)$/i.test(f.name)){var r=new FileReader();r.onload=function(){res(r.result)};r.onerror=function(){res("")};r.readAsText(f)}else res("")})}
+async function ingest(files,tags){var ids=[];for(var i=0;i<files.length;i++){var f=files[i];busy={t:"Reading "+f.name,p:(i/files.length)*100};draw();
+ var txt=await readText(f);if(!txt)txt="This file type cannot be parsed in the browser prototype. In the full application the backend extracts its text before splitting. "+f.name+" is stored as a placeholder so the workflow can be tried.";
+ var steps=["Splitting into chunks","Tagging each chunk","Embedding chunks","Storing in vector database"];var chunks=split(txt);
+ for(var s=0;s<steps.length;s++){busy={t:steps[s]+" · "+f.name,p:((i+(s+1)/steps.length)/files.length)*100};draw();await new Promise(function(r){setTimeout(r,350)})}
+ var d={id:uid(),name:f.name,tags:tags,chunks:chunks.map(function(c){return{text:c,tags:autoTag(c)}})};S.docs.push(d);ids.push(d.id)}
+ busy=null;save();return ids}
+/* ---------- rendering ---------- */
+function applyTheme(){var r=document.documentElement;if(S.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",S.theme)}
+function isDark(){return S.theme==="dark"||(S.theme==="auto"&&matchMedia("(prefers-color-scheme:dark)").matches)}
+function bar(){return busy?'<div class="wrap" style="margin-bottom:10px"><div style="font-size:13px;color:var(--mute);margin-bottom:4px">'+esc(busy.t)+'</div><div class="bar'+(busy.p!=null?' det':'')+'"><i style="'+(busy.p!=null?'width:'+busy.p+'%':'')+'"></i></div></div>':""}
+function drawSide(){var a=$("#side");a.className=S.side?"":"closed";$("#open").classList.toggle("show",!S.side);
+ a.innerHTML='<div class="side-top"><button class="icon" data-a="toggle" aria-label="Close sidebar">'+I.left+'</button></div>'+
+ '<button class="row new'+(V.n==="new"?" sel":"")+'" data-a="new">+ New chat</button>'+
+ '<button class="row'+(V.n==="inv"?" sel":"")+'" data-a="inv">Document inventory</button>'+
+ '<div class="hist">'+(S.chats.length?S.chats.slice().reverse().map(function(c){return'<button class="row'+(V.n==="chat"&&V.id===c.id?" sel":"")+'" data-a="chat" data-id="'+c.id+'">'+esc(c.title)+'</button>'}).join(""):'<span style="color:var(--mute);padding:8px 12px;font-size:13px">No chats yet</span>')+'</div>'+
+ '<div class="side-bot"><button class="icon" data-a="set" aria-label="Settings">'+I.gear+'</button><div class="seg"><button data-a="theme" data-v="light" class="'+(!isDark()?"on":"")+'">Day</button><button data-a="theme" data-v="dark" class="'+(isDark()?"on":"")+'">Night</button></div></div>'}
+function composer(){
+ var chips=pend.map(function(id){var d=S.docs.find(function(x){return x.id===id});return d?'<span class="chip">'+esc(d.name)+' <button data-a="unpend" data-id="'+id+'" aria-label="Remove">×</button></span>':""}).join("");
+ return bar()+(chips?'<div class="pend">'+chips+'</div>':"")+'<div class="box">'+(menu?'<div class="menu"><button class="row" data-a="frominv">From inventory</button><button class="row" data-a="upload">Upload file</button></div>':"")+
+ '<button class="icon" data-a="menu" aria-label="Add documents">＋</button><textarea id="q" rows="1" placeholder="Ask about your documents…"></textarea><button class="btn" data-a="send">Send</button></div>'}
+function draw(){drawSide();var b=$("#body"),f=$("#foot"),t=$("#title"),sc=b.scrollTop;f.innerHTML="";var keep=($("#q")||{}).value||"";
+ if(V.n==="default"){t.textContent="Paper Desk";b.innerHTML='<div class="empty"><div><h2>Ask your papers anything</h2><p>Start a new chat, or add files in the document inventory.</p></div></div>'}
+ else if(V.n==="new"||V.n==="chat"){var c=V.n==="chat"?S.chats.find(function(x){return x.id===V.id}):null;t.textContent=c?c.title:"";
+  b.innerHTML=c?'<div class="wrap">'+c.msgs.map(function(m){return'<div class="msg '+m.r+'"><div>'+(m.files||[]).map(function(n){return'<span class="chip">'+esc(n)+'</span>'}).join("")+'</div><div class="bub">'+esc(m.t)+'</div>'+(m.src&&m.src.length?'<div class="src"><details><summary>'+m.src.length+' sources used</summary>'+m.src.map(function(s){return'<details><summary>'+esc(s.f)+' <span class="tag">'+esc(s.tags)+'</span></summary><p>'+esc(s.x)+'</p></details>'}).join("")+'</details></div>':"")+'</div>'}).join("")+'</div>':'<div class="empty"><div><h2>New chat</h2><p>Add documents with ＋, then ask a question.</p></div></div>';
+  f.innerHTML='<div class="composer">'+composer()+'</div>';b.scrollTop=c?b.scrollHeight:0;var q=$("#q");if(q){q.value=keep;if(!busy)q.focus()}}
+ else if(V.n==="inv"){t.textContent="Document inventory";
+  b.innerHTML='<div class="wrap" style="max-width:980px"><div class="tools"><input type="text" id="tg" placeholder="Tags for new files, e.g. biology, 2024"><button class="btn ghost" data-a="upinv">Upload files</button><span style="flex:1"></span><button class="btn del" data-a="del"'+(sel.length?"":" disabled")+'>Delete'+(sel.length?" ("+sel.length+")":"")+'</button></div>'+bar()+
+  (S.docs.length?'<div class="grid">'+S.docs.map(function(d){var on=sel.indexOf(d.id)>-1;return'<div class="file'+(on?" on":"")+'">'+'<input type="checkbox" data-a="chk" data-id="'+d.id+'"'+(on?" checked":"")+' aria-label="Select '+esc(d.name)+'">'+I.doc+'<div>'+esc(d.name)+'</div><small>'+d.chunks.length+' chunks'+(d.tags.length?" · "+esc(d.tags.join(", ")):"")+'</small></div>'}).join("")+'</div>':'<div class="empty" style="height:240px"><div><h2>No documents yet</h2><p>Upload files to split, tag and embed them.</p></div></div>')+'</div>'}
+ else if(V.n==="set"){t.textContent="Settings";var blk=function(k,h,n){var s=S.set[k];return'<section><h2>'+h+'</h2><span>Provider</span><select data-s="'+k+'.p">'+Object.keys(PROV).map(function(p){return'<option'+(p===s.p?" selected":"")+'>'+p+'</option>'}).join("")+'</select><span>Model name</span><select data-s="'+k+'.m">'+PROV[s.p].map(function(m){return'<option'+(m===s.m?" selected":"")+'>'+m+'</option>'}).join("")+'</select><span>API key</span><input type="password" data-s="'+k+'.k" value="'+esc(s.k)+'" placeholder="Paste key" autocomplete="off"><span>'+n+'</span></section>'};
+  b.innerHTML='<div class="wrap" style="max-width:900px"><div class="cols">'+blk("e","Embedding model","Turns document chunks and questions into vectors.")+blk("r","Response model","Writes the answer from the retrieved chunks.")+'</div></div>'}}
+function modal(){var L=$("#layer");L.innerHTML='<div class="modal"><div class="card"><h3>Choose documents</h3><input type="text" id="ms" placeholder="Search"><div class="list" id="ml"></div><div class="acts"><button class="btn ghost" data-a="mcancel">Cancel</button><button class="btn" data-a="mok">Add to chat</button></div></div></div>';
+ var fill=function(){var q=$("#ms").value.toLowerCase();$("#ml").innerHTML=S.docs.filter(function(d){return d.name.toLowerCase().indexOf(q)>-1||d.tags.join(" ").toLowerCase().indexOf(q)>-1}).map(function(d){return'<label class="item"><input type="checkbox" value="'+d.id+'"'+(pend.indexOf(d.id)>-1?" checked":"")+'>'+esc(d.name)+'</label>'}).join("")||'<p style="color:var(--mute)">No documents. Upload some first.</p>'};
+ $("#ms").oninput=fill;fill()}
+function say(m){toast=m;var e=document.createElement("div");e.className="toast";e.textContent=m;document.body.appendChild(e);setTimeout(function(){e.remove()},2200)}
+/* ---------- actions ---------- */
+async function send(){var q=$("#q").value.trim();if(!q||busy)return;
+ if(!pend.length&&!S.docs.length){say("Add a document first");return}
+ var c=V.n==="chat"?S.chats.find(function(x){return x.id===V.id}):null;
+ if(!c){c={id:uid(),title:q.length>38?q.slice(0,38)+"…":q,msgs:[],ids:[]};S.chats.push(c);V={n:"chat",id:c.id}}
+ pend.forEach(function(id){if(c.ids.indexOf(id)<0)c.ids.push(id)});
+ var names=pend.map(function(id){return(S.docs.find(function(d){return d.id===id})||{}).name}).filter(Boolean);pend=[];
+ c.msgs.push({r:"u",t:q,files:names});busy={t:"Searching documents and writing the answer…",p:null};draw();
+ await new Promise(function(r){setTimeout(r,1100)});
+ var ids=c.ids.length?c.ids:S.docs.map(function(d){return d.id});var hits=retrieve(q,ids);
+ c.msgs.push({r:"a",t:answer(q,hits),src:hits.filter(function(h){return h.s>0}).map(function(h){return{f:h.d.name,tags:h.c.tags.join(", "),x:h.c.text}})});
+ busy=null;save();draw()}
+document.addEventListener("click",async function(e){var el=e.target.closest("[data-a]");if(!el){if(menu&&!e.target.closest(".box")){menu=false;draw()}return}
+ var a=el.dataset.a,id=el.dataset.id;
+ if(a==="toggle"){S.side=!S.side;save();draw()}
+ else if(a==="new"){V={n:"new"};pend=[];menu=false;draw();if(innerWidth<760){S.side=false;draw()}}
+ else if(a==="inv"){V={n:"inv"};draw()}
+ else if(a==="set"){V={n:"set"};draw()}
+ else if(a==="chat"){V={n:"chat",id:id};draw();if(innerWidth<760){S.side=false;draw()}}
+ else if(a==="theme"){S.theme=el.dataset.v;save();applyTheme();draw()}
+ else if(a==="menu"){menu=!menu;draw()}
+ else if(a==="frominv"){menu=false;draw();modal()}
+ else if(a==="upload"||a==="upinv"){menu=false;$("#pick").dataset.to=a;$("#pick").click()}
+ else if(a==="mcancel"){$("#layer").innerHTML=""}
+ else if(a==="mok"){pend=Array.prototype.map.call(document.querySelectorAll("#ml input:checked"),function(i){return i.value});$("#layer").innerHTML="";draw()}
+ else if(a==="unpend"){pend=pend.filter(function(x){return x!==id});draw()}
+ else if(a==="send")send();
+ else if(a==="chk"){var i=sel.indexOf(id);if(i<0)sel.push(id);else sel.splice(i,1);draw()}
+ else if(a==="del"){if(!sel.length)return;$("#layer").innerHTML='<div class="modal"><div class="card"><h3>Delete '+sel.length+' document(s)?</h3><p style="margin:0;color:var(--mute)">Their chunks and embeddings are removed too. This cannot be undone.</p><div class="acts"><button class="btn ghost" data-a="mcancel">Cancel</button><button class="btn del" data-a="delok">Delete</button></div></div></div>'}
+ else if(a==="delok"){S.docs=S.docs.filter(function(d){return sel.indexOf(d.id)<0});S.chats.forEach(function(c){c.ids=(c.ids||[]).filter(function(i){return S.docs.some(function(d){return d.id===i})})});sel=[];$("#layer").innerHTML="";save();draw();say("Deleted")}});
+$("#pick").addEventListener("change",async function(e){var fs=Array.from(e.target.files);if(!fs.length)return;var to=e.target.dataset.to;var tg=$("#tg")?$("#tg").value.split(",").map(function(s){return s.trim()}).filter(Boolean):[];e.target.value="";
+ var ids=await ingest(fs,tg);if(to==="upload")pend=pend.concat(ids);draw();say(ids.length+" file(s) embedded")});
+document.addEventListener("change",function(e){var k=e.target.dataset.s;if(!k)return;var p=k.split(".");S.set[p[0]][p[1]]=e.target.value;if(p[1]==="p")S.set[p[0]].m=PROV[e.target.value][0];save();draw()});
+document.addEventListener("keydown",function(e){if(e.target.id==="q"&&e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}});
+if(innerWidth<760)S.side=false;
+applyTheme();draw();
+</script>
+</body>
+</html>
