@@ -1,0 +1,25 @@
+# Visual Studio cached files
+[Bb]in/
+[Oo]bj/
+.vs/
+
+# Visual Studio user-specific files
+*.user
+*.userosv
+*.suo
+*.userprefs
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+BuildLog.htm
+
+# NuGet Packages and restore logs
+*.nupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/

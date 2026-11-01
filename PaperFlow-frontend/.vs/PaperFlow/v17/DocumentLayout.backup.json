@@ -5,6 +5,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{D2FAC301-B7EF-448E-84F7-4E18C60D1778}|PaperFlow\\PaperFlow.csproj|g:\\project\\paperflow-thesis\\paperflow-frontend\\paperflow\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{D2FAC301-B7EF-448E-84F7-4E18C60D1778}|PaperFlow\\PaperFlow.csproj|solutionrelative:paperflow\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2FAC301-B7EF-448E-84F7-4E18C60D1778}|PaperFlow\\PaperFlow.csproj|g:\\project\\paperflow-thesis\\paperflow-frontend\\paperflow\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2FAC301-B7EF-448E-84F7-4E18C60D1778}|PaperFlow\\PaperFlow.csproj|solutionrelative:paperflow\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,8 +18,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "G:\\project\\paperflow-thesis\\PaperFlow-frontend\\PaperFlow\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "PaperFlow\\MainWindow.xaml.cs",
+              "ToolTip": "G:\\project\\paperflow-thesis\\PaperFlow-frontend\\PaperFlow\\MainWindow.xaml.cs",
+              "RelativeToolTip": "PaperFlow\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABwAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-01T15:04:45.795Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,

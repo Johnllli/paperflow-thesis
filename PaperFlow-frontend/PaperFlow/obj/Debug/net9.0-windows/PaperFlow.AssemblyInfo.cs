@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PaperFlow")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+59eeadb0d7f87487b4d06ac69d9ed13a55568fd2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dd0379aeeacdb7d1b47d51e5b9da26d5addf85e7")]
 [assembly: System.Reflection.AssemblyProductAttribute("PaperFlow")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PaperFlow")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

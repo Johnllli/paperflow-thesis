@@ -39,7 +39,7 @@
             
             <!--Text Area-->
             <Grid Grid.Row="1" Margin="24">
-                <TextBlock Text="Ask your papers anything..." HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#66727E" FontSize="16"/>
+                <TextBlock x:Name="ResultTextBox" Text="Ask your papers anything..." HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#66727E" FontSize="16"/>
             </Grid>
 
             <!--Input Area-->
@@ -50,8 +50,8 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Grid.Column="0" Text="Ask about your documents…" BorderThickness="0" VerticalContentAlignment="Center" Padding="10,0" Background="Transparent"/>
-                    <Button Grid.Column="1" Content="Send" Width="70" Margin="4" Background="#0F766E" Foreground="White" BorderThickness="0"/>
+                    <TextBox x:Name="InputTextBox" Grid.Column="0" Text="Ask about your documents…" BorderThickness="0" VerticalContentAlignment="Center" Padding="10,0" Background="Transparent"/>
+                    <Button x:Name="SendButton" Click="SendButton_click" Grid.Column="1" Content="Send" Width="70" Margin="4" Background="#0F766E" Foreground="White" BorderThickness="0"/>
                 </Grid>
             </Border>
         </Grid>
