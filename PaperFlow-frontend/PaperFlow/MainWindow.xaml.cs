@@ -26,42 +26,38 @@ namespace PaperFlow
             InitializeComponent();
         }
 
-        private async void SendButton_click(object sender, RoutedEventArgs e)
+        private void SendButton_click(object sender, RoutedEventArgs e)
         {
-            //get message
-            string userText = InputTextBox.Text;
+            
 
-            if (string.IsNullOrWhiteSpace(userText)) return;
+        }
 
-            //text into json as python asked
-            //text = something
-            var payload = new { text = userText };
-            string jsonString = JsonSerializer.Serialize(payload);
-            var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-            try
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private static void changetheme(string theme)
+        {
+            var palette = new ResourceDictionary
             {
-                // send request
-                HttpResponseMessage response = await client.PostAsync("http://127.0.0.1:8000/transform", content);
+                Source = new Uri(
+            $"pack://application:,,,/Themes/{theme}.xaml",
+            UriKind.Absolute)
+            };
 
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    using var doc = JsonDocument.Parse(responseBody);
-                    string reply = doc.RootElement.GetProperty("result").GetString();
+            Application.Current.Resources.MergedDictionaries[0] = palette;
+        }
 
-                    ResultTextBox.Text = reply;
-                }
-                else
-                {
-                    ResultTextBox.Text = "Error" + response.StatusCode;
-                }
-            }
-            catch(Exception ex)
-            {
-                ResultTextBox.Text = "Error: " + ex.Message;
-            }
+        private void NightThemeButton_Checked(object sender, RoutedEventArgs e)
+        {
+           changetheme("Night");
+        }
 
+        private void NightThemeButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            changetheme("Day");
         }
     }
 }

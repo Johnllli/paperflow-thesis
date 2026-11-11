@@ -1,0 +1,15 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<SolidColorBrush x:Key="BgColor" Color="#0F1419"/>
+	<SolidColorBrush x:Key="PanelColor" Color="#161D25"/>
+	<SolidColorBrush x:Key="SideColor" Color="#12181E"/>
+	<SolidColorBrush x:Key="InkColor" Color="#E6EBF0"/>
+	<SolidColorBrush x:Key="MuteColor" Color="#8B97A3"/>
+	<SolidColorBrush x:Key="LineColor" Color="#27313B"/>
+	<SolidColorBrush x:Key="HoverColor" Color="#232D38"/>
+	<SolidColorBrush x:Key="AccentColor" Color="#4FD1C0"/>
+	<SolidColorBrush x:Key="AccentTextColor" Color="#05201C"/>
+
+</ResourceDictionary>
