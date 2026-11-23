@@ -98,11 +98,13 @@
                 <StackPanel DockPanel.Dock="Top">
                     <Button Content="+ New Chat" Height="36" Margin="0,0,0,8" 
                             Background="{DynamicResource PanelColor}" BorderBrush="{DynamicResource LineColor}" Foreground="{DynamicResource InkColor}"
-                            HorizontalContentAlignment="Left" Padding="10,0"/>
+                            HorizontalContentAlignment="Left" Padding="10,0"
+                            Click="NewChatButton_Click"/>
                     
                     <Button Content="Document inventory" Height="36" 
                             Background="Transparent" Foreground="{DynamicResource InkColor}"
-                            BorderThickness="0" HorizontalContentAlignment="Left" Padding="8,0"/>
+                            BorderThickness="0" HorizontalContentAlignment="Left" Padding="8,0"
+                            Click="DocumentInventoryButton_Click"/>
 
                     <TextBlock Text="Chat history" Foreground="{DynamicResource MuteColor}" FontSize="12" Margin="8,16,0,8"/>
                     <TextBlock Text="No chats yet" Foreground="{DynamicResource MuteColor}" FontSize="12" Margin="8,0,0,0"/>
@@ -119,34 +121,80 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="56" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!--Header-->
             <Border Grid.Row="0" BorderBrush="{DynamicResource LineColor}" BorderThickness="0,0,0,1" Padding="16,0">
-                <TextBlock Text="Paper Desk" VerticalAlignment="Center" FontSize="18" FontWeight="SemiBold"/>
+                <TextBlock x:Name="pagetitle" Text="Paper Desk" VerticalAlignment="Center" FontSize="18" FontWeight="SemiBold"/>
             </Border>
             
-            <!--Text Area-->
-            <Grid Grid.Row="1" Margin="24">
-                <TextBlock x:Name="ResultTextBox" Text="Ask your papers anything..." HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#66727E" FontSize="16"/>
-            </Grid>
+            <!--view-->
+            <Grid Grid.Row="1">
+                <!--Chat part-->
+                <Grid x:Name="ChatView">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-            <!--Input Area-->
-            <Border Grid.Row="2" Padding="24.12">
-                <Grid Background="{DynamicResource PanelColor}" Height="48">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                    <!--Text Area-->
+                    <ScrollViewer Grid.Row="0" x:Name="ChatScrollViewer" Padding="24" 
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled"> 
+                        <StackPanel x:Name="ChatMessagePanel" MaxWidth="760" 
+                                    HorizontalAlignment="Center"/>
+                    </ScrollViewer>
+                    
+                        <!--Input Area-->
+                    <Border x:Name="ChatInputArea"  Grid.Row="2" Padding="24.12">
+                        <Grid Background="{DynamicResource PanelColor}" Height="48">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                    <TextBox x:Name="InputTextBox" Grid.Column="0" Text="Ask about your documents…" BorderThickness="0" 
-                             VerticalContentAlignment="Center" Padding="10,0" 
-                             Background="Transparent" Foreground="{DynamicResource InkColor}" CaretBrush="{DynamicResource InkColor}"/>
-                    <Button x:Name="SendButton" Click="SendButton_click" Grid.Column="1" Content="Send" Width="70" Margin="4" 
-                            Background="{DynamicResource AccentColor}" Foreground="{DynamicResource AccentTextColor}" BorderThickness="0"/>
+                            <Button x:Name="AddFileButton" Grid.Column="0"
+                                Content="+" Width="36" Margin="4"
+                                ToolTip="Add a document"
+                                Click="AddFileButton_Click"/>
+
+                            <TextBox x:Name="InputTextBox" Grid.Column="1" Text="Ask about your documents…" BorderThickness="0" 
+                                 VerticalContentAlignment="Center" Padding="10,0" 
+                                 Background="Transparent" Foreground="{DynamicResource InkColor}" CaretBrush="{DynamicResource InkColor}"/>
+                            <Button x:Name="SendButton" Click="SendButton_click" Grid.Column="2" Content="Send" Width="70" Margin="4" 
+                                Background="{DynamicResource AccentColor}" Foreground="{DynamicResource AccentTextColor}" BorderThickness="0"/>
+                        </Grid>
+                    </Border>
                 </Grid>
-            </Border>
+
+                <!--Document inve part-->
+                <Grid x:Name="InventoryView" Visibility="Collapsed"
+                      Margin="24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <ListBox x:Name="DocumentList" Grid.Row="0"
+                             DisplayMemberPath="filename" 
+                             Background="{DynamicResource PanelColor}"
+                             Foreground="{DynamicResource InkColor}"
+                             BorderBrush="{DynamicResource LineColor}"/>
+
+                    <Button Grid.Row="1" Content="Use selected document"
+                            HorizontalAlignment="Right" Padding="12,6"
+                            Margin="0,12,0,0"
+                            Click="UseDocumentButton_Click"/>
+
+
+                </Grid>
+    
+            </Grid>
+            
+            
+
+            
         </Grid>
     </Grid>
 </Window>

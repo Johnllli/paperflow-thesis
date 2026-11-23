@@ -1,0 +1,89 @@
+# Cedar Research Fair — Participant and Visitor Handbook
+
+## Fair overview
+
+The Cedar Research Fair takes place in the North Library on Saturday, May 17. The fair opens to visitors at 10:30 a.m. and closes at 4:30 p.m. The main exhibition is on the ground floor, and the scheduled talks are in the second-floor reading room. The courtyard door is the public entrance. A volunteer at that entrance will hand out the program and point visitors toward the welcome desk, the exhibition tables, and the nearest lift.
+
+The fair brings together student researchers, library staff, community organizations, and independent project teams. Exhibits are grouped into four areas: environmental studies, computing, community history, and design. Visitors can move between the exhibits at their own pace. Most presenters will have a poster, a short explanation, and a small demonstration or object connected to their work. Presenters are encouraged to explain their research in everyday language and leave time for questions.
+
+The printed program shows when each team is expected to be at its poster. A team may step away to attend a talk or take a lunch break. If a presenter is absent, visitors can return during the team's next scheduled session. Each poster will display a short project code. The welcome desk can use that code to help visitors locate a team or find its entry in the program.
+
+## Arrival and access
+
+Visitors arriving from Maple Street should follow the signs past the library garden and into the courtyard. The regular entrance on Library Lane will remain in use for library members, and the fair signs will direct visitors to the courtyard door. The courtyard route is level and has automatic doors. Anyone who needs a quieter arrival can ask the entrance volunteer for directions to the seating area beside the welcome desk.
+
+There are bicycle racks near the garden gate and a covered rack beside the west wall. The parking area behind the library has two marked accessible spaces. Drivers dropping someone off can stop at the designated drop-off point on Maple Street. The delivery bay on Library Lane is reserved for exhibitors unloading equipment between 8:45 and 9:30 a.m. Vehicles must leave the bay once unloading is complete.
+
+The lift serves both floors and is next to the staircase by the welcome desk. Accessible toilets are located on the ground floor, beyond the exhibition tables. Visitors who need help reaching a talk can ask a volunteer wearing a green badge. The second-floor reading room has seating near the entrance for people who prefer a shorter route to the exit.
+
+## Poster submissions
+
+Poster presenters must submit their title by Thursday, May 15, at 5:00 p.m. The submission should include the names of the presenters and a short description suitable for the printed program. One person from each team should submit the information and check that the spelling of every name is correct. Titles received after the deadline can still be displayed at the fair, but they may appear under the team's project code in the printed program.
+
+Posters should be printed in A2 format. Either portrait or landscape orientation is acceptable. Each team will have one presentation board, and removable mounting strips will be available at the setup desk near the courtyard entrance. Presenters should bring a printed copy of their poster. The library print desk will handle its regular services on Saturday and has no scheduled production time for fair posters that morning.
+
+A poster should state the research question, describe how the team investigated it, and summarize what the team found. Charts should have readable labels and units. If a chart uses data from another source, add a short source note under the chart. A poster can include a QR code linking to further material, but visitors should be able to understand the main findings by reading the printed poster alone.
+
+## Exhibitor check-in and setup
+
+Exhibitor check-in begins at 8:45 a.m. at the setup desk. Team leaders should give the volunteer their project code and collect a table card. The table card shows the team's exhibition area, board number, and presentation times. Teams should set up by 10:10 a.m. so the floor coordinator has time to check aisle clearance before visitors arrive.
+
+Presentation boards are stored near the entrance. Teams should take the board assigned to them and ask a volunteer for help carrying it if necessary. Mounting strips go on the back of the poster. Any display that needs a tabletop stand should be positioned far enough from the edge that visitors can pass without catching a sleeve or bag on it. Keep spare materials beneath the table, clear of the aisles.
+
+Exhibitors who requested electricity will find their tables marked with a blue dot on the floor plan. The floor coordinator will show those teams where to connect their equipment. Teams using battery-powered devices should charge them before arrival. Demonstrations that use sound should keep the volume low enough for a visitor standing at the next table to hear a conversation.
+
+## Volunteer assignments
+
+Volunteers should arrive 45 minutes before the fair opens. Since the public opening is at 10:30 a.m., volunteers should report at 9:45 a.m. The volunteer coordinator will meet them in the staff workroom beside the ground-floor staircase. Each person will receive a green badge, a printed schedule, and an assigned station. The briefing covers directions, radio etiquette, and how to contact the floor coordinator.
+
+The first shift runs from 9:45 a.m. to 12:30 p.m. The second shift runs from 12:15 p.m. to 3:00 p.m. The closing shift runs from 2:45 p.m. until the exhibition is packed away. The overlap gives volunteers time to pass along information about schedule changes, borrowed equipment, and any visitor questions that still need an answer.
+
+Volunteer stations include the courtyard entrance, the welcome desk, the lift landing, and the entrance to the reading room. Volunteers should remain near their assigned stations until someone covers their position. If a visitor asks a question about a research project, volunteers can use the printed program to direct them to the right team. Any change to the location or timing of a talk should go through the floor coordinator before the welcome desk updates the signs.
+
+## Morning program
+
+The welcome remarks begin at 10:45 a.m. in the second-floor reading room. The fair coordinator will introduce the exhibition areas, explain how the audience vote works, and give a brief overview of the talks. The first talk begins at 11:15 a.m. and is titled “Reading a River Through Its Sensors.” It describes how a student team used temperature measurements to compare shaded and exposed parts of a local stream.
+
+At 11:50 a.m., the community history group will present “Maps That Remember.” The group interviewed residents about neighborhood landmarks that have disappeared or changed use. During the talk, the presenters will show a series of annotated maps and explain how they checked descriptions against photographs and archived street directories. The group will have a selection of printed maps available at its exhibition table later in the day.
+
+The morning poster session runs from 11:00 a.m. to 12:30 p.m. Teams in the environmental studies and community history areas should have a presenter at their board during this session. Visitors who prefer a quieter time to browse can start shortly after the fair opens, before the talks and demonstrations are underway. The reading room doors will open ten minutes before each talk.
+
+## Afternoon program
+
+The afternoon talks begin at 1:30 p.m. with “Searching the Library’s Oral Histories.” The computing team will demonstrate a search interface for a collection of interview transcripts. It will compare keyword search with a method that finds passages with a similar meaning to the question. The presenters will also show an example where the search returned a related passage that did not contain enough evidence to answer the question.
+
+At 2:20 p.m., a design team will present “A Better Sign for a Busy Building.” The team tested different signs by asking participants to find a meeting room using a paper map and temporary signs. The talk will explain why the researchers measured both travel time and the number of wrong turns. A small version of the wayfinding exercise will be available at the team's exhibition table.
+
+The afternoon poster session runs from 1:15 p.m. to 3:15 p.m. Teams in the computing and design areas should have someone at their board throughout the session. At 3:45 p.m., the coordinator will announce the audience award in the reading room. Visitors can continue browsing until 4:30 p.m. The exhibition floor will close at that time so teams can begin taking down their displays.
+
+## Workshops and demonstrations
+
+The paper circuits workshop begins at 12:45 p.m. in the ground-floor activity corner. Participants will build a simple light-up card with copper tape, a small light, and a battery. The workshop runs for 25 minutes and has 12 seats. Sign-ups open at the welcome desk at 10:30 a.m. The desk will keep a waiting list and offer available places to people on that list at the start of the workshop.
+
+A map annotation demonstration takes place at 2:00 p.m. at the community history table. The presenter will show how to add a source note to a map and distinguish a remembered location from one confirmed by an archived record. Visitors can bring the name of a local landmark they remember. The demonstration will focus on recording the evidence attached to each location.
+
+The computing exhibit has a demonstration called “Find the Missing Paragraph.” Visitors choose a question and watch the search system display its three highest-ranked passages. The presenter will ask visitors to decide whether any passage answers the question. The display includes one question with a clear answer, one that needs evidence from two passages, and one that asks for information absent from the collection. The demonstration repeats throughout the afternoon poster session.
+
+## Welcome desk and visitor services
+
+The welcome desk is directly ahead after entering through the courtyard door. It holds the printed program, workshop sign-up sheets, and the current floor plan. The desk also keeps large-print copies of the schedule. If a talk moves or starts late, the updated time will be written on the board beside the desk. Volunteers can help locate a presenter by project code or by the title of the exhibit.
+
+Visitors can refill water bottles at the fountain near the ground-floor toilets. The courtyard has benches, and the seating area beside the welcome desk remains available throughout the fair. Food and open drinks should stay in the courtyard or the designated seating area. The reading room and the spaces directly around exhibition equipment are reserved for browsing and presentations.
+
+Lost items should be handed in at the welcome desk. The volunteer will record where and when each item was found. At 4:30 p.m., any unclaimed items will be transferred to the library's regular service desk. A visitor looking for a missing item after the fair should contact the library and give a short description of it and the area they last visited.
+
+## Audience award and feedback
+
+Visitors can vote for one project in the audience award. Ballots are available at the welcome desk from 10:30 a.m. until voting closes at 3:15 p.m. To vote, write the project's code on the ballot and place it in the wooden ballot box beside the welcome desk. The code appears on the team’s table card and in the printed program. A volunteer can help locate a code if the visitor remembers the project title.
+
+The award recognizes the project visitors found most clearly explained. Visitors can consider whether the presenters described their research question, made their methods understandable, and could explain what their findings mean. The coordinator will count the ballots after voting closes and announce the result at 3:45 p.m. in the reading room.
+
+A separate feedback sheet asks visitors what they found useful and what could be improved. The sheet includes space to comment on the program, the layout, and the clarity of the signs. Visitors can return it to the welcome desk at any time before the exhibition closes. The organizing team will use the comments when planning the next fair. People who leave feedback may omit their name.
+
+## Quiet space, photographs, and seating
+
+The small study room next to the ground-floor toilets is available as a quiet space during the event. The room has six chairs and a table, and the lights can be dimmed on request. Visitors can ask at the welcome desk for directions. The room is intended for short breaks, so anyone who needs a longer place to sit can also use the seating area near the courtyard entrance.
+
+The fair photographer will take general pictures of the exhibition and the talks. Presenters can tell the welcome desk if they would prefer to keep a particular display out of official photographs. Visitors who want to photograph a poster or demonstration should ask the presenter first. Some research teams are showing draft material, and a presenter may offer a handout or a public project link instead.
+
+Talk seating is available in the reading room as
