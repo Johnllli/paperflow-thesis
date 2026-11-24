@@ -74,3 +74,21 @@ def list_documents():
 
     return list(documents.values())
 
+def find_passages_from_documents(document_ids, question):
+    passages = store.similarity_search(
+        question,
+        k=6,
+        filter={"document_id": {"$in": document_ids}},
+    )
+
+    text_parts = []
+
+    for passage in passages:
+        filename = passage.metadata["filename"]
+
+        text_parts.append(
+            f"Document: {filename}\n{passage.page_content}"
+        )
+
+    return "\n\n".join(text_parts)
+

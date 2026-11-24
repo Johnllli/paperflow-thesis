@@ -107,10 +107,16 @@
                             Click="DocumentInventoryButton_Click"/>
 
                     <TextBlock Text="Chat history" Foreground="{DynamicResource MuteColor}" FontSize="12" Margin="8,16,0,8"/>
+                    
                     <ListBox x:Name="ChatHistoryList" DisplayMemberPath="Title"
                              SelectionChanged="ChatHistoryList_SelectionChanged" MaxHeight="300"
                              Background="Transparent" Foreground="{DynamicResource InkColor}"
-                             BorderThickness="0"/>  
+                             BorderThickness="0" />
+                    
+                    <Button Content="Delete selected chat"
+                            Click="DeleteChatButton_Click"
+                            Margin="0,8,0,0"
+                            Padding="8,4"/>
                 </StackPanel>
 
                 
@@ -183,9 +189,10 @@
                              DisplayMemberPath="filename" 
                              Background="{DynamicResource PanelColor}"
                              Foreground="{DynamicResource InkColor}"
-                             BorderBrush="{DynamicResource LineColor}"/>
+                             BorderBrush="{DynamicResource LineColor}"
+                             SelectionMode="Multiple"/>
 
-                    <Button Grid.Row="1" Content="Use selected document"
+                    <Button Grid.Row="1" Content="Use selected documents"
                             HorizontalAlignment="Right" Padding="12,6"
                             Margin="0,12,0,0"
                             Click="UseDocumentButton_Click"/>

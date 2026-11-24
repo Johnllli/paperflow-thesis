@@ -27,7 +27,7 @@ namespace PaperFlow
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string? selectedDocumentId;
+        private List<string> selectedDocumentIds = new();
         private static readonly HttpClient client = new HttpClient();
         public MainWindow()
         {
@@ -76,7 +76,7 @@ namespace PaperFlow
                     new 
                     {
                         messages = pendingMessages,
-                        document_id = selectedDocumentId
+                        document_ids = selectedDocumentIds
                     });
 
                 if (!response.IsSuccessStatusCode)
@@ -99,6 +99,7 @@ namespace PaperFlow
                     role = "user",
                     content = message
                 });
+                
                 conversation.Add(new ChatMessage
                 {
                     role = "assistant",
@@ -229,13 +230,15 @@ namespace PaperFlow
                 using var json =
                     await JsonDocument.ParseAsync(body);
 
-                selectedDocumentId = json.RootElement.GetProperty("document_id").GetString()
-                    ?? throw new Exception("The backend returned an empty document DI.");
+                string documentId = json.RootElement.GetProperty("document_id").GetString()
+                    ?? throw new Exception("The backend returned an empty document ID.");
+
+                selectedDocumentIds.Add(documentId);
 
                 AddChatMessage(
                     "Document uploaded",
                     System.IO.Path.GetFileName(dialog.FileName));
-
+                SaveCurrentChat();
             }
             catch (Exception exc)
             {
@@ -262,7 +265,7 @@ namespace PaperFlow
             conversation.Clear();
             ChatMessagePanel.Children.Clear();
             InputTextBox.Clear();
-            selectedDocumentId = null;
+            selectedDocumentIds.Clear();
 
             InventoryView.Visibility = Visibility.Collapsed;
             ChatView.Visibility = Visibility.Visible;
@@ -288,6 +291,14 @@ namespace PaperFlow
 
             DocumentList.ItemsSource = documents;
 
+            foreach (DocumentItem document in DocumentList.Items)
+            {
+                if (selectedDocumentIds.Contains(document.document_id))
+                {
+                    DocumentList.SelectedItems.Add(document);
+                }
+            }
+
             ChatView.Visibility = Visibility.Collapsed;
             InventoryView.Visibility = Visibility.Visible;
             pagetitle.Text = "Document Inventory";
@@ -296,18 +307,23 @@ namespace PaperFlow
         // save chat into history
         private void UseDocumentButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DocumentList.SelectedItem is not DocumentItem document)
+            if (DocumentList.SelectedItems.Count == 0)
             {
                 return;
             }
 
-            selectedDocumentId = document.document_id;
+            selectedDocumentIds.Clear();
+
+            foreach (DocumentItem document in DocumentList.SelectedItems)
+            {
+                selectedDocumentIds.Add(document.document_id);
+                AddChatMessage("Document selected", document.filename);
+            }
 
             InventoryView.Visibility = Visibility.Collapsed;
             ChatView.Visibility = Visibility.Visible;
-            pagetitle.Text = "Paper Desk";
+            pagetitle.Text = "Paper Flow";
 
-            AddChatMessage("Document selected", document.filename);
             SaveCurrentChat();
             InputTextBox.Focus();
         }
@@ -317,6 +333,7 @@ namespace PaperFlow
             public string Id { get; set; } = "";
             public string Title { get; set; } = "";
             public string? DocumentId { get; set; }
+            public List<string> DocumentIds { get; set; } = new();
             public List<ChatMessage> Messages { get; set; } = new();
         }
 
@@ -330,7 +347,7 @@ namespace PaperFlow
 
         private void SaveCurrentChat()
         {
-            if (conversation.Count == 0 && selectedDocumentId is null)
+            if (conversation.Count == 0 && selectedDocumentIds.Count == 0)
             {
                 return;
             }
@@ -353,7 +370,8 @@ namespace PaperFlow
                 ? title.Substring(0, 40) + "…"
                 : title;
 
-            currentChat.DocumentId = selectedDocumentId;
+            currentChat.DocumentIds = selectedDocumentIds.ToList();
+            currentChat.DocumentId = null;
             currentChat.Messages = conversation.ToList();
 
             Directory.CreateDirectory(Path.GetDirectoryName(historyPath)!);
@@ -371,8 +389,7 @@ namespace PaperFlow
         }
 
         //open saved conversation
-        private void ChatHistoryList_SelectionChanged(
-    object sender, SelectionChangedEventArgs e)
+        private void ChatHistoryList_SelectionChanged( object sender, SelectionChangedEventArgs e)
         {
             if (ChatHistoryList.SelectedItem is not SavedChat chat)
             {
@@ -380,7 +397,13 @@ namespace PaperFlow
             }
 
             currentChat = chat;
-            selectedDocumentId = chat.DocumentId;
+            selectedDocumentIds = chat.DocumentIds.ToList();
+
+            // Restore the document from chats saved with the earlier version.
+            if (selectedDocumentIds.Count == 0 && chat.DocumentId is not null)
+            {
+                selectedDocumentIds.Add(chat.DocumentId);
+            }
 
             conversation.Clear();
             conversation.AddRange(chat.Messages);
@@ -397,6 +420,37 @@ namespace PaperFlow
             ChatView.Visibility = Visibility.Visible;
             pagetitle.Text = chat.Title;
             InputTextBox.Clear();
+        }
+
+        private void DeleteChatButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!SendButton.IsEnabled)
+            {
+                return;
+            }
+
+            if (ChatHistoryList.SelectedItem is not SavedChat chat)
+            {
+                return;
+            }
+
+            savedChats.Remove(chat);
+
+            if (currentChat == chat)
+            {
+                NewChatButton_Click(sender, e);
+            }
+
+            string json = JsonSerializer.Serialize(
+                savedChats,
+                new JsonSerializerOptions { WriteIndented = true });
+
+            string temporaryPath = historyPath + ".tmp";
+            File.WriteAllText(temporaryPath, json);
+            File.Move(temporaryPath, historyPath, overwrite: true);
+
+            ChatHistoryList.ItemsSource = null;
+            ChatHistoryList.ItemsSource = savedChats;
         }
     }
 }
