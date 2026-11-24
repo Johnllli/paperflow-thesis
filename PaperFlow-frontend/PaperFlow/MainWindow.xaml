@@ -107,7 +107,10 @@
                             Click="DocumentInventoryButton_Click"/>
 
                     <TextBlock Text="Chat history" Foreground="{DynamicResource MuteColor}" FontSize="12" Margin="8,16,0,8"/>
-                    <TextBlock Text="No chats yet" Foreground="{DynamicResource MuteColor}" FontSize="12" Margin="8,0,0,0"/>
+                    <ListBox x:Name="ChatHistoryList" DisplayMemberPath="Title"
+                             SelectionChanged="ChatHistoryList_SelectionChanged" MaxHeight="300"
+                             Background="Transparent" Foreground="{DynamicResource InkColor}"
+                             BorderThickness="0"/>  
                 </StackPanel>
 
                 
