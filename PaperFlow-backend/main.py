@@ -3,8 +3,9 @@ from langchain_ollama import ChatOllama
 from pydantic import BaseModel, Field
 from typing import Literal
 from pathlib import Path
-from uuid import uuid4
-from rag import add_document, find_passages, list_documents, find_passages_from_documents
+from uuid import uuid4, UUID
+from rag import add_document, find_passages, list_documents
+from rag import find_passages_from_documents, delete_document
 
 class ChatMessage(BaseModel):
     role: Literal["user", "assistant"]
@@ -94,3 +95,14 @@ def upload_document(file: UploadFile):
 @app.get("/documents")
 def get_documents():
     return list_documents()
+
+@app.delete("/documents/{document_id}")
+def remove_document(document_id: UUID):
+    document_id = str(document_id)
+
+    delete_document(document_id)
+
+    saved_path = UPLOAD_DIRECTORY / f"{document_id}.txt"
+    saved_path.unlink(missing_ok=True)
+
+    return {"message": "Document deleted"}

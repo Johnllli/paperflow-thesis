@@ -29,6 +29,7 @@ namespace PaperFlow
     {
         private List<string> selectedDocumentIds = new();
         private static readonly HttpClient client = new HttpClient();
+        private List<DocumentItem> pickerDocuments = new();
         public MainWindow()
         {
             InitializeComponent();
@@ -73,7 +74,7 @@ namespace PaperFlow
 
                 using var response = await client.PostAsJsonAsync(
                     "http://127.0.0.1:8000/chat",
-                    new 
+                    new
                     {
                         messages = pendingMessages,
                         document_ids = selectedDocumentIds
@@ -88,7 +89,7 @@ namespace PaperFlow
                 using var body =
                     await response.Content.ReadAsStreamAsync();
 
-                using var json = 
+                using var json =
                     await JsonDocument.ParseAsync(body);
 
                 string answer = json.RootElement.GetProperty("reply").GetString()
@@ -99,7 +100,7 @@ namespace PaperFlow
                     role = "user",
                     content = message
                 });
-                
+
                 conversation.Add(new ChatMessage
                 {
                     role = "assistant",
@@ -154,14 +155,14 @@ namespace PaperFlow
 
         private readonly List<ChatMessage> conversation = new();
 
-        
+
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
-        
-        
+
+
 
         private static void changetheme(string theme)
         {
@@ -177,7 +178,7 @@ namespace PaperFlow
 
         private void NightThemeButton_Checked(object sender, RoutedEventArgs e)
         {
-           changetheme("Night");
+            changetheme("Night");
         }
 
         private void NightThemeButton_Unchecked(object sender, RoutedEventArgs e)
@@ -279,6 +280,7 @@ namespace PaperFlow
             public string document_id { get; set; } = "";
             public string filename { get; set; } = "";
             public int chunk_count { get; set; }
+            public bool IsSelected { get; set; }
         }
         private async void DocumentInventoryButton_Click(object sender, RoutedEventArgs e)
         {
@@ -305,28 +307,7 @@ namespace PaperFlow
         }
 
         // save chat into history
-        private void UseDocumentButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DocumentList.SelectedItems.Count == 0)
-            {
-                return;
-            }
 
-            selectedDocumentIds.Clear();
-
-            foreach (DocumentItem document in DocumentList.SelectedItems)
-            {
-                selectedDocumentIds.Add(document.document_id);
-                AddChatMessage("Document selected", document.filename);
-            }
-
-            InventoryView.Visibility = Visibility.Collapsed;
-            ChatView.Visibility = Visibility.Visible;
-            pagetitle.Text = "Paper Flow";
-
-            SaveCurrentChat();
-            InputTextBox.Focus();
-        }
 
         public class SavedChat
         {
@@ -389,7 +370,7 @@ namespace PaperFlow
         }
 
         //open saved conversation
-        private void ChatHistoryList_SelectionChanged( object sender, SelectionChangedEventArgs e)
+        private void ChatHistoryList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ChatHistoryList.SelectedItem is not SavedChat chat)
             {
@@ -451,6 +432,184 @@ namespace PaperFlow
 
             ChatHistoryList.ItemsSource = null;
             ChatHistoryList.ItemsSource = savedChats;
+        }
+
+        private void OpenAddMenu_Click(object sender, RoutedEventArgs e)
+        {
+            AddFileButton.ContextMenu.PlacementTarget = AddFileButton;
+            AddFileButton.ContextMenu.IsOpen = true;
+        }
+
+        private async void FromInventory_Click(object sender, RoutedEventArgs e)
+        {
+            AddFileButton.IsEnabled = false;
+            SendButton.IsEnabled = false;
+            ChatHistoryList.IsEnabled = false;
+
+            try
+            {
+                pickerDocuments = await client.GetFromJsonAsync<List<DocumentItem>>(
+                    "http://127.0.0.1:8000/documents")
+                    ?? new List<DocumentItem>();
+
+                foreach (DocumentItem document in pickerDocuments)
+                {
+                    document.IsSelected =
+                        selectedDocumentIds.Contains(document.document_id);
+                }
+
+                PickerDocumentList.ItemsSource = pickerDocuments;
+                DocumentSearch.Clear();
+                DocumentPicker.Visibility = Visibility.Visible;
+                DocumentSearch.Focus();
+            }
+            catch (Exception ex)
+            {
+                AddChatMessage("Error", ex.Message);
+            }
+            finally
+            {
+                AddFileButton.IsEnabled = true;
+                SendButton.IsEnabled = true;
+                ChatHistoryList.IsEnabled = true;
+            }
+        }
+
+        private void DocumentSearch_TextChanged(
+    object sender, TextChangedEventArgs e)
+        {
+            if (PickerDocumentList.ItemsSource is null)
+            {
+                return;
+            }
+
+            string search = DocumentSearch.Text.Trim();
+
+            var view = CollectionViewSource.GetDefaultView(
+                PickerDocumentList.ItemsSource);
+
+            view.Filter = item =>
+                ((DocumentItem)item).filename.Contains(
+                    search,
+                    StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void CancelDocumentPicker_Click(object sender, RoutedEventArgs e)
+        {
+            DocumentPicker.Visibility = Visibility.Collapsed;
+        }
+
+        private void AddPickedDocuments_Click(object sender, RoutedEventArgs e)
+        {
+            selectedDocumentIds.Clear();
+
+            foreach (DocumentItem document in pickerDocuments)
+            {
+                if (document.IsSelected)
+                {
+                    selectedDocumentIds.Add(document.document_id);
+                }
+            }
+
+            SaveCurrentChat();
+            DocumentPicker.Visibility = Visibility.Collapsed;
+
+            AddChatMessage(
+                "Documents",
+                $"{selectedDocumentIds.Count} document(s) selected.");
+
+            InputTextBox.Focus();
+        }
+
+        // remove file from inve
+        private async void DeleteDocumentsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!SendButton.IsEnabled)
+            {
+                return;
+            }
+
+            var selected = DocumentList.SelectedItems
+                .Cast<DocumentItem>()
+                .ToList();
+
+            if (selected.Count == 0)
+            {
+                return;
+            }
+
+            var confirmation = MessageBox.Show(
+                $"Delete {selected.Count} document(s) and their stored chunks?",
+                "Delete documents",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirmation != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            DeleteDocumentsButton.IsEnabled = false;
+            SendButton.IsEnabled = false;
+            AddFileButton.IsEnabled = false;
+            ChatHistoryList.IsEnabled = false;
+
+            try
+            {
+                foreach (DocumentItem document in selected)
+                {
+                    using var response = await client.DeleteAsync(
+                        $"http://127.0.0.1:8000/documents/{document.document_id}");
+
+                    response.EnsureSuccessStatusCode();
+
+                    selectedDocumentIds.Remove(document.document_id);
+
+                    foreach (SavedChat chat in savedChats)
+                    {
+                        chat.DocumentIds.Remove(document.document_id);
+
+                        if (chat.DocumentId == document.document_id)
+                        {
+                            chat.DocumentId = null;
+                        }
+                    }
+
+                    WriteChatHistory();
+
+                    var remaining = DocumentList.Items
+                        .Cast<DocumentItem>()
+                        .Where(item => item.document_id != document.document_id)
+                        .ToList();
+
+                    DocumentList.ItemsSource = remaining;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Delete failed");
+            }
+            finally
+            {
+                DeleteDocumentsButton.IsEnabled = true;
+                SendButton.IsEnabled = true;
+                AddFileButton.IsEnabled = true;
+                ChatHistoryList.IsEnabled = true;
+            }
+        }
+
+        //save chat
+        private void WriteChatHistory()
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(historyPath)!);
+
+            string json = JsonSerializer.Serialize(
+                savedChats,
+                new JsonSerializerOptions { WriteIndented = true });
+
+            string temporaryPath = historyPath + ".tmp";
+            File.WriteAllText(temporaryPath, json);
+            File.Move(temporaryPath, historyPath, overwrite: true);
         }
     }
 }

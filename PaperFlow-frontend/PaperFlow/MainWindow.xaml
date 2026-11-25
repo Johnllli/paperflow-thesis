@@ -155,7 +155,7 @@
                     </ScrollViewer>
                     
                         <!--Input Area-->
-                    <Border x:Name="ChatInputArea"  Grid.Row="2" Padding="24.12">
+                    <Border x:Name="ChatInputArea"  Grid.Row="1" Padding="24.12">
                         <Grid Background="{DynamicResource PanelColor}" Height="48">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -166,7 +166,18 @@
                             <Button x:Name="AddFileButton" Grid.Column="0"
                                 Content="+" Width="36" Margin="4"
                                 ToolTip="Add a document"
-                                Click="AddFileButton_Click"/>
+                                Click="OpenAddMenu_Click">
+
+                                <Button.ContextMenu>
+                                    <ContextMenu Placement="Top">
+                                        <MenuItem Header="From Inventory"
+                                                  Click="FromInventory_Click"/>
+                                        <MenuItem Header="Upload File"
+                                                  Click="AddFileButton_Click"/>
+                                    </ContextMenu>
+                                </Button.ContextMenu>
+                                
+                            </Button>
 
                             <TextBox x:Name="InputTextBox" Grid.Column="1" Text="Ask about your documents…" BorderThickness="0" 
                                  VerticalContentAlignment="Center" Padding="10,0" 
@@ -191,11 +202,11 @@
                              Foreground="{DynamicResource InkColor}"
                              BorderBrush="{DynamicResource LineColor}"
                              SelectionMode="Multiple"/>
-
-                    <Button Grid.Row="1" Content="Use selected documents"
-                            HorizontalAlignment="Right" Padding="12,6"
-                            Margin="0,12,0,0"
-                            Click="UseDocumentButton_Click"/>
+                    <!--remove file from inven-->
+                    <Button x:Name="DeleteDocumentsButton" Grid.Row="1" Content="Delete selected documents"
+                            HorizontalAlignment="Right" Padding="12,6" Margin="0,12,0,0"
+                            Background="#C62828" Foreground="White"
+                            Click="DeleteDocumentsButton_Click"/>
 
 
                 </Grid>
@@ -206,5 +217,59 @@
 
             
         </Grid>
+        
+        <!-- chooe file form inventory + button -->
+        <Border x:Name="DocumentPicker" Grid.ColumnSpan="2"
+                Background="#80000000" Visibility="Collapsed">
+            
+            <Border Width="460" MaxHeight="500" Padding="20" CornerRadius="12"
+                    Background="{DynamicResource PanelColor}"
+                    VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Choose documents" FontSize="20" Margin="0,0,0,12"/>
+
+                    <TextBox x:Name="DocumentSearch" Grid.Row="1" Margin="0,0,0,12" Padding="8"
+                             ToolTip="Search documents" TextChanged="DocumentSearch_TextChanged"/>
+
+                    <ListBox x:Name="PickerDocumentList" Grid.Row="2" 
+                             MinHeight="120" MaxHeight="280"
+                             Background="{DynamicResource PanelColor}"
+                             Foreground="{DynamicResource InkColor}">
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox Content="{Binding filename}"
+                                          Foreground="{DynamicResource InkColor}"
+                                          IsChecked="{Binding IsSelected, Mode=TwoWay, 
+                                                        UpdateSourceTrigger=PropertyChanged}"
+                                          Margin="4"/>
+
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel Grid.Row="3"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Margin="0,16,0,0">
+                        <Button Content="Cancel" Padding="12,6" Margin="0,0,8,0"
+                                Click="CancelDocumentPicker_Click"/>
+
+                        <Button Content="Add to chat" Padding="12,6" Click="AddPickedDocuments_Click"/>
+
+                    </StackPanel>
+                </Grid>
+                
+            </Border>
+        </Border>
+        
     </Grid>
 </Window>

@@ -92,3 +92,11 @@ def find_passages_from_documents(document_ids, question):
 
     return "\n\n".join(text_parts)
 
+def delete_document(document_id): 
+    result = store.get(
+        where={"document_id": document_id},
+        include=["metadatas"]
+    )
+    if result["ids"]:
+        store.delete(ids=result["ids"])
+
